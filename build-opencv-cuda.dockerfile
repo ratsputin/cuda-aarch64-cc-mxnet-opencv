@@ -1,4 +1,4 @@
-FROM aarch64-cuda10-2
+FROM aarch64-cuda11-4
 
 COPY scripts/build_opencv.sh / 
 

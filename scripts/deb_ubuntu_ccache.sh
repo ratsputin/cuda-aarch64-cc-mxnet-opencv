@@ -19,18 +19,13 @@ apt install -y --no-install-recommends \
 mkdir -p /work/deps
 cd /work/deps
 
-git clone --recursive -b v3.4.2 https://github.com/ccache/ccache.git
+git clone --recursive -b v4.8.2 https://github.com/ccache/ccache.git
 
 cd ccache
 
-./autogen.sh
-# Manually specify x86 gcc versions so that this script remains compatible with dockcross (which uses an ARM based gcc
-# by default).
-CC=/usr/bin/gcc CXX=/usr/bin/g++ ./configure
-
-# Don't build documentation #11214
-#perl -pi -e 's!\s+\Q$(installcmd) -d $(DESTDIR)$(mandir)/man1\E!!g' Makefile
-#perl -pi -e 's!\s+\Q-$(installcmd) -m 644 ccache.1 $(DESTDIR)$(mandir)/man1/\E!!g' Makefile
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j$(nproc)
 make install
 

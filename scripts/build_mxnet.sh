@@ -1,18 +1,11 @@
 git clone https://github.com/apache/incubator-mxnet ./mxnet
 cd mxnet
-git checkout tags/1.8.0
+git checkout tags/1.9.1
 git submodule update --init --recursive
 
-
+ln -s /usr/bin/python3.8 /usr/bin/python
 mkdir build_aarch64_cuda
 cd build_aarch64_cuda
-
-# Need to delete line 15 from cpp-package/CMakeLists.txt
-# See: https://github.com/apache/incubator-mxnet/issues/20222
-# We then copy the op.h 
-
-sed -i '15d' ../cpp-package/CMakeLists.txt
-mv /op.h ../cpp-package/include/mxnet-cpp
 
 # CMAKE_TOOLCHAIN_FILE is set in docker image.
 cmake\
@@ -21,7 +14,7 @@ cmake\
   -DUSE_BLAS=Open \
   -DUSE_CUDA=ON\
   -DUSE_CUDNN=ON\
-  -DMXNET_CUDA_ARCH="5.3;6.2;7.2"\
+  -DMXNET_CUDA_ARCH="8.7"\
   -DENABLE_CUDA_RTC=OFF\
   -DCMAKE_BUILD_TYPE=Release\
   -DUSE_F16C=OFF\
@@ -37,5 +30,5 @@ cmake\
   -DCMAKE_INSTALL_PREFIX=./packaged\
   ..
 
-cmake --build . -j 5
+cmake --build . -j $(nproc) 
 cmake --build . --target install
